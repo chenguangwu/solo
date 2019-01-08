@@ -1,6 +1,6 @@
 /*
- * Solo - A beautiful, simple, stable, fast Java blogging system.
- * Copyright (c) 2010-2018, b3log.org & hacpai.com
+ * Solo - A small and beautiful blogging system written in Java.
+ * Copyright (c) 2010-2019, b3log.org & hacpai.com
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published by
@@ -16,7 +16,6 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 package org.b3log.solo.model;
-
 
 /**
  * This class defines all archive date model relevant keys.
@@ -62,7 +61,8 @@ public final class ArchiveDate {
     public static final String ARCHIVE_DATE_MONTH = "archiveDateMonth";
 
     /**
-     * Private default constructor.
+     * Private constructor.
      */
-    private ArchiveDate() {}
+    private ArchiveDate() {
+    }
 }

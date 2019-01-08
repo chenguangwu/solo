@@ -1,7 +1,7 @@
 <#--
 
-    Solo - A beautiful, simple, stable, fast Java blogging system.
-    Copyright (c) 2010-2018, b3log.org & hacpai.com
+    Solo - A small and beautiful blogging system written in Java.
+    Copyright (c) 2010-2019, b3log.org & hacpai.com
 
     This program is free software: you can redistribute it and/or modify
     it under the terms of the GNU Affero General Public License as published by
@@ -17,9 +17,8 @@
     along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
 -->
-<link type="text/css" rel="stylesheet" href="${staticServePath}/plugins/kanbanniang/assert/index.css"/>
-<script src="${staticServePath}/plugins/kanbanniang/assert/live2d.js"></script>
-<script async src="${staticServePath}/plugins/kanbanniang/assert/index.js"></script>
+<link type="text/css" rel="stylesheet" href="https://static-solo.b3log.org/plugins/kanbanniang/assert/index.css"/>
+<script async src="https://static-solo.b3log.org/plugins/kanbanniang/assert/index.js"></script>
 <div class="solo-kanbanniang">
     <div class="solo-kanbanniang__tip"></div>
     <canvas id="soloKanbanniang" width="280" height="250"></canvas>

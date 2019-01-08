@@ -1,6 +1,6 @@
 /*
- * Solo - A beautiful, simple, stable, fast Java blogging system.
- * Copyright (c) 2010-2018, b3log.org & hacpai.com
+ * Solo - A small and beautiful blogging system written in Java.
+ * Copyright (c) 2010-2019, b3log.org & hacpai.com
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published by
@@ -18,7 +18,7 @@
 package org.b3log.solo.model.sitemap;
 
 import org.apache.commons.lang.StringEscapeUtils;
-import org.b3log.latke.util.Strings;
+import org.apache.commons.lang.StringUtils;
 
 /**
  * Sitemap URL.
@@ -115,7 +115,7 @@ public final class URL {
         stringBuilder.append(StringEscapeUtils.escapeXml(loc));
         stringBuilder.append(END_LOC_ELEMENT);
 
-        if (!Strings.isEmptyOrNull(lastMod)) {
+        if (StringUtils.isNotBlank(lastMod)) {
             stringBuilder.append(START_LAST_MOD_ELEMENT);
             stringBuilder.append(lastMod);
             stringBuilder.append(END_LAST_MOD_ELEMENT);

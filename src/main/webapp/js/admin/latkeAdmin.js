@@ -1,6 +1,6 @@
 /*
- * Solo - A beautiful, simple, stable, fast Java blogging system.
- * Copyright (c) 2010-2018, b3log.org & hacpai.com
+ * Solo - A small and beautiful blogging system written in Java.
+ * Copyright (c) 2010-2019, b3log.org & hacpai.com
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published by
@@ -274,8 +274,8 @@ $.extend(Admin.prototype, {
 });
 
 var admin = new Admin();/*
- * Solo - A beautiful, simple, stable, fast Java blogging system.
- * Copyright (c) 2010-2018, b3log.org & hacpai.com
+ * Solo - A small and beautiful blogging system written in Java.
+ * Copyright (c) 2010-2019, b3log.org & hacpai.com
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published by
@@ -375,8 +375,8 @@ admin.editors.articleEditor = {};
 admin.editors.abstractEditor = {};
 admin.editors.pageEditor = {};
 /*
- * Solo - A beautiful, simple, stable, fast Java blogging system.
- * Copyright (c) 2010-2018, b3log.org & hacpai.com
+ * Solo - A small and beautiful blogging system written in Java.
+ * Copyright (c) 2010-2019, b3log.org & hacpai.com
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published by
@@ -502,8 +502,8 @@ admin.editors.tinyMCE = {
     }
 };
 /*
- * Solo - A beautiful, simple, stable, fast Java blogging system.
- * Copyright (c) 2010-2018, b3log.org & hacpai.com
+ * Solo - A small and beautiful blogging system written in Java.
+ * Copyright (c) 2010-2019, b3log.org & hacpai.com
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published by
@@ -609,8 +609,8 @@ admin.editors.KindEditor = {
     }
 };
 /*
- * Solo - A beautiful, simple, stable, fast Java blogging system.
- * Copyright (c) 2010-2018, b3log.org & hacpai.com
+ * Solo - A small and beautiful blogging system written in Java.
+ * Copyright (c) 2010-2019, b3log.org & hacpai.com
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published by
@@ -630,7 +630,7 @@ admin.editors.KindEditor = {
  *
  * @author <a href="http://vanessa.b3log.org">Liyuan Li</a>
  * @author <a href="http://88250.b3log.org">Liang Ding</a>
- * @version 1.5.0.0, Mar 15, 2018
+ * @version 1.6.0.0, Jan 4, 2019
  */
 
 Util.processClipBoard = function (text, cm) {
@@ -877,8 +877,11 @@ admin.editors.CodeMirror = {
         },
         success: function (result, textStatus) {
           $('#' + conf.id).parent().find('.CodeMirror-preview').html(result.html);
-          hljs.initHighlighting.called = false;
-          hljs.initHighlighting();
+          Util.parseMarkdown('content-reset');
+          if (!Label.markedAvailable) {
+            hljs.initHighlighting.called = false;
+            hljs.initHighlighting();
+          }
         }
       });
     });
@@ -915,8 +918,8 @@ admin.editors.CodeMirror = {
     $('.editor-toolbar').remove();
   }
 };/*
- * Solo - A beautiful, simple, stable, fast Java blogging system.
- * Copyright (c) 2010-2018, b3log.org & hacpai.com
+ * Solo - A small and beautiful blogging system written in Java.
+ * Copyright (c) 2010-2019, b3log.org & hacpai.com
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published by
@@ -1031,8 +1034,8 @@ $.extend(TablePaginate.prototype, {
     }
 });
 /*
- * Solo - A beautiful, simple, stable, fast Java blogging system.
- * Copyright (c) 2010-2018, b3log.org & hacpai.com
+ * Solo - A small and beautiful blogging system written in Java.
+ * Copyright (c) 2010-2019, b3log.org & hacpai.com
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published by
@@ -1052,7 +1055,7 @@ $.extend(TablePaginate.prototype, {
  *
  * @author <a href="http://vanessa.b3log.org">Liyuan Li</a>
  * @author <a href="http://88250.b3log.org">Liang Ding</a>
- * @version 1.5.0.1, Apr 5, 2018
+ * @version 1.5.1.1, Dec 10, 2018
  */
 admin.article = {
     currentEditorType: '',
@@ -1069,7 +1072,7 @@ admin.article = {
     // 自动保存间隔
     AUTOSAVETIME: 1000 * 60,
     /**
-     * @description 获取文章并把值塞入发布文章页面 
+     * @description 获取文章并把值塞入发布文章页面
      * @param {String} id 文章 id
      * @param {Boolean} isArticle 文章或者草稿
      */
@@ -1150,7 +1153,7 @@ admin.article = {
      * @param {String} title 文章标题
      */
     del: function (id, fromId, title) {
-        var isDelete = confirm(Label.confirmRemoveLabel + Label.articleLabel + '"' + title + '"?');
+        var isDelete = confirm(Label.confirmRemoveLabel + Label.articleLabel + '"' + Util.htmlDecode(title) + '"?');
         if (isDelete) {
             $("#loadMsg").text(Label.loadingLabel);
             $("#tipMsg").text("");
@@ -1529,8 +1532,7 @@ admin.article = {
      */
     _autoSaveToDraft: function () {
         if ($("#title").val().replace(/\s/g, "") === "" ||
-                admin.editors.articleEditor.getContent().replace(/\s/g, "") === "" ||
-                $("#tag").val().replace(/\s/g, "") === "") {
+                admin.editors.articleEditor.getContent().replace(/\s/g, "") === "") {
             return;
         }
         if (admin.article.status.id) {
@@ -1562,16 +1564,13 @@ admin.article = {
             $("#title").focus().val("");
         } else if (articleContent.replace(/\s/g, "") === "") {
             $("#tipMsg").text(Label.contentEmptyLabel);
-        } else if ($("#tag").val().replace(/\s/g, "") === "") {
-            $("#tipMsg").text(Label.tagsEmptyLabel);
-            $("#tag").focus().val("");
         } else {
             return true;
         }
         return false;
     },
     /**
-     * @description 取消发布 
+     * @description 取消发布
      * @param {Boolean} isAuto 是否为自动保存
      */
     unPublish: function (isAuto) {
@@ -1673,7 +1672,7 @@ admin.article = {
 };
 
 /**
- * @description 注册到 admin 进行管理 
+ * @description 注册到 admin 进行管理
  */
 admin.register.article = {
     "obj": admin.article,
@@ -1701,8 +1700,8 @@ function getUUID() {
 }
 ;
 /*
- * Solo - A beautiful, simple, stable, fast Java blogging system.
- * Copyright (c) 2010-2018, b3log.org & hacpai.com
+ * Solo - A small and beautiful blogging system written in Java.
+ * Copyright (c) 2010-2019, b3log.org & hacpai.com
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published by
@@ -1833,8 +1832,8 @@ admin.comment = {
     }
 };
 /*
- * Solo - A beautiful, simple, stable, fast Java blogging system.
- * Copyright (c) 2010-2018, b3log.org & hacpai.com
+ * Solo - A small and beautiful blogging system written in Java.
+ * Copyright (c) 2010-2019, b3log.org & hacpai.com
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published by
@@ -1933,7 +1932,7 @@ admin.articleList = {
                     var topClass = articles[i].articlePutTop ? Label.cancelPutTopLabel : Label.putTopLabel;
                     articleData[i].expendRow = "<a target='_blank' href='" + latkeConfig.servePath + articles[i].articlePermalink + "'>" + Label.viewLabel + "</a>  \
                                 <a href='javascript:void(0)' onclick=\"admin.article.get('" + articles[i].oId + "', true)\">" + Label.updateLabel + "</a>  \
-                                <a href='javascript:void(0)' onclick=\"admin.article.del('" + articles[i].oId + "', 'article', '" + articles[i].articleTitle + "')\">" + Label.removeLabel + "</a>  \
+                                <a href='javascript:void(0)' onclick=\"admin.article.del('" + articles[i].oId + "', 'article', '" + encodeURIComponent(articles[i].articleTitle) + "')\">" + Label.removeLabel + "</a>  \
                                 <a href='javascript:void(0)' onclick=\"admin.articleList.popTop(this, '" + articles[i].oId + "')\">" + topClass + "</a>  \
                                 <a href='javascript:void(0)' onclick=\"admin.comment.open('" + articles[i].oId + "', 'article')\">" + Label.commentLabel + "</a>";
                 }
@@ -1989,8 +1988,8 @@ admin.register["article-list"] =  {
     "init": admin.articleList.init,
     "refresh": admin.articleList.getList
 }/*
- * Solo - A beautiful, simple, stable, fast Java blogging system.
- * Copyright (c) 2010-2018, b3log.org & hacpai.com
+ * Solo - A small and beautiful blogging system written in Java.
+ * Copyright (c) 2010-2019, b3log.org & hacpai.com
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published by
@@ -2010,7 +2009,7 @@ admin.register["article-list"] =  {
  *
  * @author <a href="http://vanessa.b3log.org">Liyuan Li</a>
  * @author <a href="http://88250.b3log.org">Liang Ding</a>
- * @version 1.0.1.5, Apr 5, 2018
+ * @version 1.0.2.0, Sep 10, 2018
  */
 
 /* draft-list 相关操作 */
@@ -2084,7 +2083,7 @@ admin.draftList = {
                     articles[i].articlePermalink + "' target='_blank'>" + 
                     articles[i].articleTitle + "</a><span class='table-tag'>" + articles[i].articleTags + "</span>";
                     articleData[i].expendRow = "<a href='javascript:void(0)' onclick=\"admin.article.get('" + articles[i].oId + "', false);\">" + Label.updateLabel + "</a>  \
-                                <a href='javascript:void(0)' onclick=\"admin.article.del('" + articles[i].oId + "', 'draft', '" + articles[i].articleTitle + "')\">" + Label.removeLabel + "</a>  \
+                                <a href='javascript:void(0)' onclick=\"admin.article.del('" + articles[i].oId + "', 'draft', '" + encodeURIComponent(articles[i].articleTitle) + "')\">" + Label.removeLabel + "</a>  \
                                 <a href='javascript:void(0)' onclick=\"admin.comment.open('" + articles[i].oId + "', 'draft')\">" + Label.commentLabel + "</a>";
                 }
                     
@@ -2104,8 +2103,8 @@ admin.register["draft-list"] =  {
     "init": admin.draftList.init,
     "refresh": admin.draftList.getList
 };/*
- * Solo - A beautiful, simple, stable, fast Java blogging system.
- * Copyright (c) 2010-2018, b3log.org & hacpai.com
+ * Solo - A small and beautiful blogging system written in Java.
+ * Copyright (c) 2010-2019, b3log.org & hacpai.com
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published by
@@ -2125,7 +2124,7 @@ admin.register["draft-list"] =  {
  *
  * @author <a href="http://vanessa.b3log.org">Liyuan Li</a>
  * @author <a href="http://88250.b3log.org">Liang Ding</a>
- * @version 1.2.3.7, Apr 5, 2018
+ * @version 1.2.4.0, Sep 10, 2018
  */
 
 /* page-list 相关操作 */
@@ -2273,7 +2272,7 @@ admin.pageList = {
                     pageData[i].comments = pages[i].pageCommentCount;
                     pageData[i].expendRow = "<span><a href='" + pages[i].pagePermalink + "' target='_blank'>" + Label.viewLabel + "</a>  \
                                 <a href='javascript:void(0)' onclick=\"admin.pageList.get('" + pages[i].oId + "')\">" + Label.updateLabel + "</a>\
-                                <a href='javascript:void(0)' onclick=\"admin.pageList.del('" + pages[i].oId + "', '" + pages[i].pageTitle + "')\">" + Label.removeLabel + "</a>\
+                                <a href='javascript:void(0)' onclick=\"admin.pageList.del('" + pages[i].oId + "', '" + encodeURIComponent(pages[i].pageTitle) + "')\">" + Label.removeLabel + "</a>\
                                 <a href='javascript:void(0)' onclick=\"admin.comment.open('" + pages[i].oId + "', 'page')\">" + Label.commentLabel + "</a></span>";
                 }
 
@@ -2334,7 +2333,7 @@ admin.pageList = {
      * @title 自定义页面标题
      */
     del: function (id, title) {
-        var isDelete = confirm(Label.confirmRemoveLabel + Label.navLabel + '"' + title + '"?');
+        var isDelete = confirm(Label.confirmRemoveLabel + Label.navLabel + '"' + Util.htmlDecode(title) + '"?');
         if (isDelete) {
             $("#loadMsg").text(Label.loadingLabel);
             $("#tipMsg").text("");
@@ -2562,8 +2561,8 @@ admin.register["page-list"] = {
     "refresh": admin.pageList.getList
 }
 /*
- * Solo - A beautiful, simple, stable, fast Java blogging system.
- * Copyright (c) 2010-2018, b3log.org & hacpai.com
+ * Solo - A small and beautiful blogging system written in Java.
+ * Copyright (c) 2010-2019, b3log.org & hacpai.com
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published by
@@ -2751,8 +2750,8 @@ admin.register.others = {
   }
 };
 /*
- * Solo - A beautiful, simple, stable, fast Java blogging system.
- * Copyright (c) 2010-2018, b3log.org & hacpai.com
+ * Solo - A small and beautiful blogging system written in Java.
+ * Copyright (c) 2010-2019, b3log.org & hacpai.com
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published by
@@ -2772,7 +2771,7 @@ admin.register.others = {
  *
  * @author <a href="http://vanessa.b3log.org">Liyuan Li</a>
  * @author <a href="http://88250.b3log.org">Liang Ding</a>
- * @version 1.1.1.5, Apr 5, 2018
+ * @version 1.1.2.1, Oct 24, 2018
  */
 
 /* link-list 相关操作 */
@@ -2813,6 +2812,7 @@ admin.linkList = {
         this.getList(page);
         
         $("#updateLink").dialog({
+            title:  $("#updateLink").data('title'),
             width: 700,
             height: 290,
             "modal": true,
@@ -2876,7 +2876,7 @@ admin.linkList = {
                     linkData[i].linkDescription = links[i].linkDescription;
                     linkData[i].expendRow = "<span><a href='" + links[i].linkAddress + "' target='_blank'>" + Label.viewLabel + "</a>  \
                                 <a href='javascript:void(0)' onclick=\"admin.linkList.get('" + links[i].oId + "')\">" + Label.updateLabel + "</a>\
-                                <a href='javascript:void(0)' onclick=\"admin.linkList.del('" + links[i].oId + "', '" + links[i].linkTitle + "')\">" + Label.removeLabel + "</a></span>";
+                                <a href='javascript:void(0)' onclick=\"admin.linkList.del('" + links[i].oId + "', '" + encodeURIComponent(links[i].linkTitle) + "')\">" + Label.removeLabel + "</a></span>";
                 }
 
                 that.tablePagination.updateTablePagination(linkData, pageNum, result.pagination);
@@ -3006,7 +3006,7 @@ admin.linkList = {
      * @title 链接标题
      */
     del: function (id, title) {
-        var isDelete = confirm(Label.confirmRemoveLabel + Label.permalinkLabel + '"' + title + '"?');
+        var isDelete = confirm(Label.confirmRemoveLabel + Label.permalinkLabel + '"' + Util.htmlDecode(title) + '"?');
         if (isDelete) {
             $("#loadMsg").text(Label.loadingLabel);
             $("#tipMsg").text("");
@@ -3102,8 +3102,8 @@ admin.register["link-list"] =  {
     "init": admin.linkList.init,
     "refresh": admin.linkList.getList
 }/*
- * Solo - A beautiful, simple, stable, fast Java blogging system.
- * Copyright (c) 2010-2018, b3log.org & hacpai.com
+ * Solo - A small and beautiful blogging system written in Java.
+ * Copyright (c) 2010-2019, b3log.org & hacpai.com
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published by
@@ -3123,7 +3123,7 @@ admin.register["link-list"] =  {
  *
  * @author <a href="http://vanessa.b3log.org">Liyuan Li</a>
  * @author <a href="http://88250.b3log.org">Liang Ding</a>
- * @version 1.2.1.10, Nov 15, 2016
+ * @version 1.2.1.13, Dec 24, 2018
  */
 
 /* preference 相关操作 */
@@ -3149,13 +3149,13 @@ admin.preference = {
 
                 var preference = result.preference;
 
-                $("#metaKeywords").val(preference.metaKeywords),
-                        $("#metaDescription").val(preference.metaDescription),
-                        $("#blogTitle").val(preference.blogTitle),
-                        $("#blogSubtitle").val(preference.blogSubtitle),
-                        $("#mostCommentArticleDisplayCount").val(preference.mostCommentArticleDisplayCount);
-                $("#mostViewArticleDisplayCount").val(preference.mostViewArticleDisplayCount),
-                        $("#recentCommentDisplayCount").val(preference.recentCommentDisplayCount);
+                $("#metaKeywords").val(preference.metaKeywords);
+                $("#metaDescription").val(preference.metaDescription);
+                $("#blogTitle").val(preference.blogTitle);
+                $("#blogSubtitle").val(preference.blogSubtitle);
+                $("#mostCommentArticleDisplayCount").val(preference.mostCommentArticleDisplayCount);
+                $("#mostViewArticleDisplayCount").val(preference.mostViewArticleDisplayCount);
+                $("#recentCommentDisplayCount").val(preference.recentCommentDisplayCount);
                 $("#mostUsedTagDisplayCount").val(preference.mostUsedTagDisplayCount);
                 $("#articleListDisplayCount").val(preference.articleListDisplayCount);
                 $("#articleListPaginationWindowSize").val(preference.articleListPaginationWindowSize);
@@ -3168,7 +3168,8 @@ admin.preference = {
                 $("#relevantArticlesDisplayCount").val(preference.relevantArticlesDisplayCount);
                 $("#randomArticlesDisplayCount").val(preference.randomArticlesDisplayCount);
                 $("#keyOfSolo").val(preference.keyOfSolo);
-                
+                $("#customVars").val(preference.customVars);
+
                 "true" === preference.enableArticleUpdateHint ? $("#enableArticleUpdateHint").attr("checked", "checked") : $("#enableArticleUpdateHint").removeAttr("checked");
                 "true" === preference.allowVisitDraftViaPermalink ? $("#allowVisitDraftViaPermalink").attr("checked", "checked") : $("allowVisitDraftViaPermalink").removeAttr("checked");
                 "true" === preference.allowRegister ? $("#allowRegister").attr("checked", "checked") : $("#allowRegister").removeAttr("checked");
@@ -3184,13 +3185,13 @@ admin.preference = {
                 for (var i = 0; i < skins.length; i++) {
                     var selectedClass = "";
                     if (skins[i].skinName === preference.skinName
-                            && skins[i].skinDirName === preference.skinDirName) {
+                        && skins[i].skinDirName === preference.skinDirName) {
                         selectedClass += " selected";
                     }
                     skinsHTML += "<div title='" + skins[i].skinDirName
-                            + "' class='left skinItem" + selectedClass + "'><img class='skinPreview' src='"
-                            + latkeConfig.staticServePath + "/skins/" + skins[i].skinDirName
-                            + "/preview.png'/><div>" + skins[i].skinName + "</div></div>";
+                        + "' class='left skinItem" + selectedClass + "'><img class='skinPreview' src='"
+                        + latkeConfig.staticServePath + "/skins/" + skins[i].skinDirName
+                        + "/preview.png'/><div>" + skins[i].skinName + "</div></div>";
                 }
                 $("#skinMain").append(skinsHTML + "<div class='clear'></div>");
 
@@ -3210,30 +3211,31 @@ admin.preference = {
                 $("#editorType").val(preference.editorType);
                 $("#feedOutputMode").val(preference.feedOutputMode);
                 $("#feedOutputCnt").val(preference.feedOutputCnt);
-                
+
                 $("#loadMsg").text("");
             }
         });
 
         $.ajax({
-            url: latkeConfig.servePath + "/console/preference/qiniu",
+            url: latkeConfig.servePath + "/console/preference/oss",
             type: "GET",
             cache: false,
-            success: function (result, textStatus) {
-                $("#tipMsg").text(result.msg);
+            success: function (result) {
                 if (!result.sc) {
+                    $("#tipMsg").text(result.msg);
                     $("#loadMsg").text("");
                     return;
                 }
-
-                $("#qiniuAccessKey").val(result.qiniu.qiniuAccessKey);
-                $("#qiniuSecretKey").val(result.qiniu.qiniuSecretKey);
-                $("#qiniuDomain").val(result.qiniu.qiniuDomain);
-                $("#qiniuBucket").val(result.qiniu.qiniuBucket);
+                //设置服务商信息
+                $('input[name=ossServer][value=' + result.oss.ossServer + ']')[0].checked = true
+                $("#ossAccessKey").val(result.oss.ossAccessKey);
+                $("#ossSecretKey").val(result.oss.ossSecretKey);
+                $("#ossDomain").val(result.oss.ossDomain);
+                $("#ossBucket").val(result.oss.ossBucket);
             }
         });
     },
-    /* 
+    /*
      * @description 参数校验
      */
     validate: function () {
@@ -3287,18 +3289,18 @@ admin.preference = {
         $("#tipMsg").text("");
         $("#loadMsg").text(Label.loadingLabel);
         var signs = [{
-                "oId": 0,
-                "signHTML": ""
-            }, {
-                "oId": 1,
-                "signHTML": $("#preferenceSign1").val()
-            }, {
-                "oId": 2,
-                "signHTML": $("#preferenceSign2").val()
-            }, {
-                "oId": 3,
-                "signHTML": $("#preferenceSign3").val()
-            }];
+            "oId": 0,
+            "signHTML": ""
+        }, {
+            "oId": 1,
+            "signHTML": $("#preferenceSign1").val()
+        }, {
+            "oId": 2,
+            "signHTML": $("#preferenceSign2").val()
+        }, {
+            "oId": 3,
+            "signHTML": $("#preferenceSign3").val()
+        }];
 
         var requestJSONObject = {
             "preference": {
@@ -3330,7 +3332,8 @@ admin.preference = {
                 "feedOutputMode": $("#feedOutputMode").val(),
                 "feedOutputCnt": $("#feedOutputCnt").val(),
                 "commentable": $("#commentable").prop("checked"),
-                "allowRegister": $("#allowRegister").prop("checked")
+                "allowRegister": $("#allowRegister").prop("checked"),
+                "customVars": $("#customVars").val()
             }
         };
 
@@ -3347,7 +3350,7 @@ admin.preference = {
                 }
 
                 if ($("#localeString").val() !== admin.preference.locale ||
-                        $("#editorType").val() !== admin.preference.editorType) {
+                    $("#editorType").val() !== admin.preference.editorType) {
                     window.location.reload();
                 }
 
@@ -3355,7 +3358,7 @@ admin.preference = {
                 for (var i = 1; i < signs.length; i++) {
                     if ($("#articleSign" + signs[i].oId).length === 1) {
                         $("#articleSign" + signs[i].oId).tip("option", "content",
-                                signs[i].signHTML === "" ? Label.signIsNullLabel : signs[i].signHTML.replace(/\n/g, "").replace(/<script.*<\/script>/ig, ""));
+                            signs[i].signHTML === "" ? Label.signIsNullLabel : signs[i].signHTML.replace(/\n/g, "").replace(/<script.*<\/script>/ig, ""));
                     }
                 }
 
@@ -3364,35 +3367,53 @@ admin.preference = {
         });
     },
     /*
-     * @description 更新 Qiniu 参数
+     * @description 更新 Oss 参数
      */
-    updateQiniu: function () {
+    updateOss: function () {
         $("#tipMsg").text("");
         $("#loadMsg").text(Label.loadingLabel);
 
         var requestJSONObject = {
-            "qiniuAccessKey": $("#qiniuAccessKey").val(),
-            "qiniuSecretKey": $("#qiniuSecretKey").val(),
-            "qiniuDomain": $("#qiniuDomain").val(),
-            "qiniuBucket": $("#qiniuBucket").val()
+            "ossServer": $('input[name=ossServer]:checked').val(),
+            "ossAccessKey": $("#ossAccessKey").val(),
+            "ossSecretKey": $("#ossSecretKey").val(),
+            "ossDomain": $("#ossDomain").val(),
+            "ossBucket": $("#ossBucket").val()
         };
 
         $.ajax({
-            url: latkeConfig.servePath + "/console/preference/qiniu",
+            url: latkeConfig.servePath + "/console/preference/oss",
             type: "PUT",
             cache: false,
             data: JSON.stringify(requestJSONObject),
-            success: function (result, textStatus) {
-                if (result.sc) {
-                    window.location.reload();
-                }
-                
-                $("#tipMsg").text(result.msg);
+            success: function (result) {
+                $("#tipMsg").html(result.msg);
                 $("#loadMsg").text("");
             }
         });
+    },
+
+    // 服务商radio change事件
+    ossServerChange: function () {
+        var ossServer = $('input[name=ossServer]:checked').val()
+        $.ajax({
+            url: latkeConfig.servePath + "/console/preference/oss?ossServer=" + ossServer,
+            type: "GET",
+            cache: false,
+            success: function (result) {
+                if (!result.sc) {
+                    $("#loadMsg").text("");
+                    $("#tipMsg").text(result.msg);
+                    return;
+                }
+                $("#ossAccessKey").val(result.oss.ossAccessKey);
+                $("#ossSecretKey").val(result.oss.ossSecretKey);
+                $("#ossDomain").val(result.oss.ossDomain);
+                $("#ossBucket").val(result.oss.ossBucket);
+            }
+        });
     }
-};
+}
 
 /*
  * 注册到 admin 进行管理 
@@ -3405,8 +3426,8 @@ admin.register["preference"] = {
     }
 };
 /*
- * Solo - A beautiful, simple, stable, fast Java blogging system.
- * Copyright (c) 2010-2018, b3log.org & hacpai.com
+ * Solo - A small and beautiful blogging system written in Java.
+ * Copyright (c) 2010-2019, b3log.org & hacpai.com
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published by
@@ -3583,8 +3604,8 @@ admin.register["plugin-list"] = {
     }
 };
 /*
- * Solo - A beautiful, simple, stable, fast Java blogging system.
- * Copyright (c) 2010-2018, b3log.org & hacpai.com
+ * Solo - A small and beautiful blogging system written in Java.
+ * Copyright (c) 2010-2019, b3log.org & hacpai.com
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published by
@@ -3604,7 +3625,7 @@ admin.register["plugin-list"] = {
  *
  * @author <a href="http://vanessa.b3log.org">Liyuan Li</a>
  * @author <a href="http://88250.b3log.org">Liang Ding</a>
- * @version 1.1.1.8, Apr 5, 2018
+ * @version 1.1.2.2, Oct 24, 2018
  */
 
 /* user-list 相关操作 */
@@ -3645,7 +3666,7 @@ admin.userList = {
 
         $("#userUpdate").dialog({
             width: 700,
-            height: 360,
+            height: 450,
             "modal": true,
             "hideFooter": true
         });
@@ -3693,7 +3714,7 @@ admin.userList = {
                     } else {
                         userData[i].expendRow = "<a href='javascript:void(0)' onclick=\"admin.userList.get('" +
                                 users[i].oId + "', '" + users[i].userRole + "')\">" + Label.updateLabel + "</a>\
-                                <a href='javascript:void(0)' onclick=\"admin.userList.del('" + users[i].oId + "', '" + users[i].userName + "')\">" + Label.removeLabel + "</a> " +
+                                <a href='javascript:void(0)' onclick=\"admin.userList.del('" + users[i].oId + "', '" + encodeURIComponent(users[i].userName) + "')\">" + Label.removeLabel + "</a> " +
                                 "<a href='javascript:void(0)' onclick=\"admin.userList.changeRole('" + users[i].oId + "')\">" + Label.changeRoleLabel + "</a>";
                         if ("defaultRole" === users[i].userRole) {
                             userData[i].isAdmin = Label.commonUserLabel;
@@ -3785,12 +3806,6 @@ admin.userList = {
                     "userRole": userRole
                 });
                 $userEmailUpdate.val(result.user.userEmail);
-                if ("adminRole" === userRole) {
-                    $userEmailUpdate.attr("disabled", "disabled");
-                } else {
-                    $userEmailUpdate.removeAttr("disabled");
-                }
-                
                 $("#userURLUpdate").val(result.user.userURL);
                 $("#userPasswordUpdate").val(result.user.userPassword);
                 $("#userAvatarUpdate").val(result.user.userAvatar);
@@ -3844,7 +3859,7 @@ admin.userList = {
      * @userName 用户名称
      */
     del: function(id, userName) {
-        var isDelete = confirm(Label.confirmRemoveLabel + Label.userLabel + '"' + userName + '"?');
+        var isDelete = confirm(Label.confirmRemoveLabel + Label.userLabel + '"' + Util.htmlDecode(userName) + '"?');
         if (isDelete) {
             $("#loadMsg").text(Label.loadingLabel);
             $("#tipMsg").text("");
@@ -3946,8 +3961,8 @@ admin.register["user-list"] = {
     "init": admin.userList.init,
     "refresh": admin.userList.getList
 }/*
- * Solo - A beautiful, simple, stable, fast Java blogging system.
- * Copyright (c) 2010-2018, b3log.org & hacpai.com
+ * Solo - A small and beautiful blogging system written in Java.
+ * Copyright (c) 2010-2019, b3log.org & hacpai.com
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published by
@@ -3967,7 +3982,7 @@ admin.register["user-list"] = {
  *
  * @author <a href="http://vanessa.b3log.org">Liyuan Li</a>
  * @author <a href="http://88250.b3log.org">Liang Ding</a>
- * @version 1.1.2.1, Apr 5, 2018
+ * @version 1.1.3.1, Oct 24, 2018
  * @since 2.0.0
  */
 
@@ -4008,6 +4023,7 @@ admin.categoryList = {
         this.getList(page);
 
         $("#categoryUpdate").dialog({
+            title: $("#categoryUpdate").data('title'),
             width: 700,
             height: 358,
             "modal": true,
@@ -4099,7 +4115,7 @@ admin.categoryList = {
                     categoryData[i].expendRow = "<a href='javascript:void(0)' onclick=\"admin.categoryList.get('" +
                             categories[i].oId + "')\">" + Label.updateLabel + "</a>\
                             <a href='javascript:void(0)' onclick=\"admin.categoryList.del('" + categories[i].oId + "', '" +
-                            categories[i].categoryTitle + "')\">" + Label.removeLabel + "</a> ";
+                            encodeURIComponent(categories[i].categoryTitle) + "')\">" + Label.removeLabel + "</a> ";
 
                 }
                 that.tablePagination.updateTablePagination(categoryData, pageNum, result.pagination);
@@ -4225,7 +4241,7 @@ admin.categoryList = {
      * @categoryName 分类名称
      */
     del: function(id, categoryName) {
-        var isDelete = confirm(Label.confirmRemoveLabel + Label.categoryLabel + '"' + categoryName + '"?');
+        var isDelete = confirm(Label.confirmRemoveLabel + Label.categoryLabel + '"' + Util.htmlDecode(categoryName) + '"?');
         if (isDelete) {
             $("#loadMsg").text(Label.loadingLabel);
             $("#tipMsg").text("");
@@ -4315,8 +4331,8 @@ admin.register["category-list"] = {
     "init": admin.categoryList.init,
     "refresh": admin.categoryList.getList
 }/*
- * Solo - A beautiful, simple, stable, fast Java blogging system.
- * Copyright (c) 2010-2018, b3log.org & hacpai.com
+ * Solo - A small and beautiful blogging system written in Java.
+ * Copyright (c) 2010-2019, b3log.org & hacpai.com
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published by
@@ -4466,8 +4482,8 @@ admin.register["comment-list"] =  {
     "init": admin.commentList.init,
     "refresh": admin.commentList.getList
 }/*
- * Solo - A beautiful, simple, stable, fast Java blogging system.
- * Copyright (c) 2010-2018, b3log.org & hacpai.com
+ * Solo - A small and beautiful blogging system written in Java.
+ * Copyright (c) 2010-2019, b3log.org & hacpai.com
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published by
@@ -4602,8 +4618,8 @@ admin.plugin = {
     }
 };
 /*
- * Solo - A beautiful, simple, stable, fast Java blogging system.
- * Copyright (c) 2010-2018, b3log.org & hacpai.com
+ * Solo - A small and beautiful blogging system written in Java.
+ * Copyright (c) 2010-2019, b3log.org & hacpai.com
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published by
@@ -4642,8 +4658,8 @@ admin.register.main =  {
     }
 };
 /*
- * Solo - A beautiful, simple, stable, fast Java blogging system.
- * Copyright (c) 2010-2018, b3log.org & hacpai.com
+ * Solo - A small and beautiful blogging system written in Java.
+ * Copyright (c) 2010-2019, b3log.org & hacpai.com
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published by

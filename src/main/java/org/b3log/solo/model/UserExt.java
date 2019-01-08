@@ -1,6 +1,6 @@
 /*
- * Solo - A beautiful, simple, stable, fast Java blogging system.
- * Copyright (c) 2010-2018, b3log.org & hacpai.com
+ * Solo - A small and beautiful blogging system written in Java.
+ * Copyright (c) 2010-2019, b3log.org & hacpai.com
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published by
@@ -17,6 +17,7 @@
  */
 package org.b3log.solo.model;
 
+import org.apache.commons.lang.StringUtils;
 
 /**
  * This class defines ext of user model relevant keys.
@@ -90,6 +91,6 @@ public final class UserExt {
             return true;
         }
 
-        return name.contains("admin") || name.contains("Admin");
+        return StringUtils.containsIgnoreCase(name, "admin");
     }
 }

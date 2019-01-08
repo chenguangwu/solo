@@ -1,6 +1,6 @@
 /*
- * Solo - A beautiful, simple, stable, fast Java blogging system.
- * Copyright (c) 2010-2018, b3log.org & hacpai.com
+ * Solo - A small and beautiful blogging system written in Java.
+ * Copyright (c) 2010-2019, b3log.org & hacpai.com
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published by
@@ -39,7 +39,7 @@ import java.net.URI;
  * </ul>
  *
  * @author <a href="http://88250.b3log.org">Liang Ding</a>
- * @version 1.1.0.12, Apr 5, 2018
+ * @version 1.1.0.15, Dec 15, 2018
  * @since 1.2.0
  */
 public final class Starter {
@@ -110,8 +110,8 @@ public final class Starter {
         final boolean isWindows = System.getProperty("os.name").toLowerCase().contains("windows");
         final String cmdSyntax = isWindows ? "java -cp \"WEB-INF/lib/*;WEB-INF/classes\" org.b3log.solo.Starter"
                 : "java -cp \"WEB-INF/lib/*:WEB-INF/classes\" org.b3log.solo.Starter";
-        final String header = "\nSolo is a blogging system written in Java, feel free to create your or your team own blog.\nSolo 是一个用 Java 实现的博客系统，为你或你的团队创建个博客吧。\n\n";
-        final String footer = "\nReport bugs or request features please visit our project website: https://github.com/b3log/solo\n\n";
+        final String header = "\nSolo 是一款小而美的 Java 博客系统。\n\n";
+        final String footer = "\n提需求或报告缺陷请到项目网站: https://github.com/b3log/solo\n\n";
         try {
             commandLine = commandLineParser.parse(options, args);
         } catch (final ParseException e) {
@@ -148,8 +148,6 @@ public final class Starter {
             Latkes.setRuntimeMode(Latkes.RuntimeMode.valueOf(runtimeMode));
         }
 
-        logger.info("Standalone mode, see https://github.com/b3log/solo/issues/12037 for more details.");
-
         String webappDirLocation = "src/main/webapp/"; // POM structure in dev env
         final File file = new File(webappDirLocation);
         if (!file.exists()) {
@@ -157,7 +155,6 @@ public final class Starter {
         }
 
         final int port = Integer.valueOf(portArg);
-
         final Server server = new Server(port);
         final WebAppContext root = new WebAppContext();
         root.setParentLoaderPriority(true); // Use parent class loader
@@ -165,7 +162,6 @@ public final class Starter {
         root.setDescriptor(webappDirLocation + "/WEB-INF/web.xml");
         root.setResourceBase(webappDirLocation);
         server.setHandler(root);
-
         try {
             server.start();
         } catch (final Exception e) {

@@ -1,7 +1,7 @@
 <#--
 
-    Solo - A beautiful, simple, stable, fast Java blogging system.
-    Copyright (c) 2010-2018, b3log.org & hacpai.com
+    Solo - A small and beautiful blogging system written in Java.
+    Copyright (c) 2010-2019, b3log.org & hacpai.com
 
     This program is free software: you can redistribute it and/or modify
     it under the terms of the GNU Affero General Public License as published by
@@ -23,6 +23,6 @@
 <h2>404 Not Found!</h2>
 <img class="img-error" src="${staticServePath}/images/404.gif" title="404" alt="404 Not Found!"/>
 <div class="a-error">
-    Return to <a href="${servePath}">Index</a> or <a href="https://hacpai.com">HacPai</a>.
+    Please <a href="${loginURL}">Login</a> or return to <a href="${servePath}">Index</a>.
 </div>
 </@commonPage>
